@@ -8,8 +8,27 @@
         body { margin: 0; background-color: #f5f5f5; font-family: sans-serif; text-align: center; }
         
         #home-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-        h1 { color: #333; }
+        h1 { color: #333; font-size: 28px; margin-bottom: 5px; }
+        .subtitle { color: #666; font-size: 16px; margin-bottom: 20px; }
+        
         .btn { background-color: #007AFF; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 10px; margin: 10px; width: 80%; max-width: 300px; font-weight: bold; }
+
+        /* ▼ 追加：注意書きのデザイン ▼ */
+        .notes-box {
+            margin-top: 30px;
+            padding: 15px;
+            width: 85%;
+            max-width: 350px;
+            background-color: #ffffff;
+            border-left: 5px solid #FF3B30; /* 左側に赤いアクセント線 */
+            border-radius: 5px;
+            font-size: 13px;
+            color: #333;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .notes-box p { margin: 5px 0; line-height: 1.5; }
+        .notes-title { font-weight: bold; color: #FF3B30; margin-bottom: 8px !important; }
 
         #camera-screen { display: none; position: relative; height: 100vh; height: 100dvh; background-color: black; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
@@ -40,9 +59,18 @@
 <body>
 
     <div id="home-screen">
-        <h1>何をチェックしますか？</h1>
+        <h1>黄ばみチェッカー</h1>
+        <p class="subtitle">何をチェックしますか？</p>
+        
         <button class="btn" onclick="startCamera('黄ばみ')">衣類の黄ばみ</button>
         <button class="btn" onclick="startCamera('シミ')">衣類のシミ</button>
+
+        <!-- ▼ 追加：注意書きエリア ▼ -->
+        <div class="notes-box">
+            <p class="notes-title">⚠️ 撮影時のご注意</p>
+            <p>※1枚目に撮る衣類と2枚目に撮る衣類は同じ場所で同じ照明の元撮影を行なってください。</p>
+            <p>※対象の衣類はシワを伸ばし影が入らない状態で撮影してください。</p>
+        </div>
     </div>
 
     <div id="camera-screen">
@@ -139,7 +167,6 @@
                     rank = "全体的に状態が悪い";
                 }
 
-                // ▼ 変更点：ランクと一緒に diffB の数値を画面に表示する ▼
                 guideText.innerHTML = `判定結果<br><span class="rank-result">${rank}</span><br><span class="diff-value">(黄ばみ数値: ${diffB.toFixed(1)})</span>`;
                 captureBtn.innerText = "もう一度やり直す";
                 step = 3;
