@@ -8,19 +8,19 @@
         body { margin: 0; background-color: #f5f5f5; font-family: sans-serif; text-align: center; }
         
         #home-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-        h1 { color: #333; font-size: 28px; margin-bottom: 5px; }
-        .subtitle { color: #666; font-size: 16px; margin-bottom: 20px; }
+        h1 { color: #333; font-size: 28px; margin-bottom: 15px; } /* 余白を調整 */
+        .subtitle { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
         
         .btn { background-color: #007AFF; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 10px; margin: 10px; width: 80%; max-width: 300px; font-weight: bold; }
 
-        /* ▼ 追加：注意書きのデザイン ▼ */
+        /* ▼ 変更：注意書きの上下の余白（隙間）を調整 ▼ */
         .notes-box {
-            margin-top: 30px;
+            margin-bottom: 30px; /* 下に隙間をあける */
             padding: 15px;
             width: 85%;
             max-width: 350px;
             background-color: #ffffff;
-            border-left: 5px solid #FF3B30; /* 左側に赤いアクセント線 */
+            border-left: 5px solid #FF3B30;
             border-radius: 5px;
             font-size: 13px;
             color: #333;
@@ -60,17 +60,18 @@
 
     <div id="home-screen">
         <h1>黄ばみチェッカー</h1>
-        <p class="subtitle">何をチェックしますか？</p>
         
-        <button class="btn" onclick="startCamera('黄ばみ')">衣類の黄ばみ</button>
-        <button class="btn" onclick="startCamera('シミ')">衣類のシミ</button>
-
-        <!-- ▼ 追加：注意書きエリア ▼ -->
+        <!-- ▼ 変更：注意書きを上に移動 ▼ -->
         <div class="notes-box">
             <p class="notes-title">⚠️ 撮影時のご注意</p>
             <p>※1枚目に撮る衣類と2枚目に撮る衣類は同じ場所で同じ照明の元撮影を行なってください。</p>
             <p>※対象の衣類はシワを伸ばし影が入らない状態で撮影してください。</p>
         </div>
+
+        <p class="subtitle">何をチェックしますか？</p>
+        
+        <button class="btn" onclick="startCamera('黄ばみ')">衣類の黄ばみ</button>
+        <button class="btn" onclick="startCamera('シミ')">衣類のシミ</button>
     </div>
 
     <div id="camera-screen">
