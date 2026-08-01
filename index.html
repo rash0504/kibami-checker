@@ -8,14 +8,13 @@
         body { margin: 0; background-color: #f5f5f5; font-family: sans-serif; text-align: center; }
         
         #home-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-        h1 { color: #333; font-size: 28px; margin-bottom: 15px; } /* 余白を調整 */
+        h1 { color: #333; font-size: 28px; margin-bottom: 15px; } 
         .subtitle { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
         
         .btn { background-color: #007AFF; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 10px; margin: 10px; width: 80%; max-width: 300px; font-weight: bold; }
 
-        /* ▼ 変更：注意書きの上下の余白（隙間）を調整 ▼ */
         .notes-box {
-            margin-bottom: 30px; /* 下に隙間をあける */
+            margin-bottom: 30px; 
             padding: 15px;
             width: 85%;
             max-width: 350px;
@@ -61,11 +60,10 @@
     <div id="home-screen">
         <h1>黄ばみチェッカー</h1>
         
-        <!-- ▼ 変更：注意書きを上に移動 ▼ -->
         <div class="notes-box">
             <p class="notes-title">⚠️ 撮影時のご注意</p>
-            <p>※1枚目に撮る衣類と2枚目に撮る衣類は同じ場所で同じ照明の元撮影を行なってください。</p>
-            <p>※対象の衣類はシワを伸ばし影が入らない状態で撮影してください。</p>
+            <p>※1枚目は対象の衣類の「綺麗な部分(背中など)」、2枚目は「判定したい部分(襟元など)」を撮影してください。</p>
+            <p>※対象の衣類はシワを伸ばし影が入らない状態で、スマホを動かさずに服をスライドさせて撮影してください。</p>
         </div>
 
         <p class="subtitle">何をチェックしますか？</p>
@@ -77,8 +75,8 @@
     <div id="camera-screen">
         <video id="video" autoplay playsinline></video>
         <div id="target-circle"></div>
-        <div id="guide-text">まずは真っ白な紙を<br>円に合わせてください</div>
-        <button id="capture-btn">基準の白を記憶する</button>
+        <div id="guide-text">まずは衣類の<br>綺麗な部分を円に合わせてください</div>
+        <button id="capture-btn">基準の色を記憶する</button>
     </div>
 
     <script>
@@ -98,8 +96,10 @@
             homeScreen.style.display = 'none';
             cameraScreen.style.display = 'block';
             step = 1;
-            guideText.innerHTML = "まずは真っ白な紙を<br>円に合わせてください";
-            captureBtn.innerText = "基準の白を記憶する";
+            
+            // 全色対応用に文言を変更
+            guideText.innerHTML = "まずは衣類の<br>綺麗な部分を円に合わせてください";
+            captureBtn.innerText = "基準の色を記憶する";
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
@@ -141,12 +141,33 @@
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const pixel = ctx.getImageData(centerX, centerY, 1, 1).data;
-            const currentLab = rgbToLab(pixel[0], pixel[1], pixel[2]);
+            
+            // 面（20x20ピクセル）で色を取得し平均化する処理
+            const areaSize = 20; 
+            const startX = Math.floor(centerX - (areaSize / 2));
+            const startY = Math.floor(centerY - (areaSize / 2));
+            
+            const imageData = ctx.getImageData(startX, startY, areaSize, areaSize).data;
+            
+            let rSum = 0, gSum = 0, bSum = 0;
+            let count = 0;
+            
+            for (let i = 0; i < imageData.length; i += 4) {
+                rSum += imageData[i];     // Red
+                gSum += imageData[i + 1]; // Green
+                bSum += imageData[i + 2]; // Blue
+                count++;
+            }
+            
+            const rAvg = rSum / count;
+            const gAvg = gSum / count;
+            const bAvg = bSum / count;
+
+            const currentLab = rgbToLab(rAvg, gAvg, bAvg);
 
             if (step === 1) {
                 baseLab = currentLab;
-                guideText.innerText = `基準色を記憶しました！\n次に判定したい衣類を\n円に合わせてください`;
+                guideText.innerText = `基準色を記憶しました！\n次に判定したい部分を\n円に合わせてください`;
                 captureBtn.innerText = "衣類を判定する";
                 step = 2;
 
