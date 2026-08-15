@@ -9,12 +9,9 @@
         
         #home-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
         h1 { color: #333; font-size: 28px; margin-bottom: 15px; } 
-        .subtitle { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
         
-        .btn { background-color: #007AFF; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 10px; margin: 10px; width: 80%; max-width: 300px; font-weight: bold; }
-
         .notes-box {
-            margin-bottom: 30px; 
+            margin-bottom: 20px; 
             padding: 15px;
             width: 85%;
             max-width: 350px;
@@ -28,6 +25,39 @@
         }
         .notes-box p { margin: 5px 0; line-height: 1.5; }
         .notes-title { font-weight: bold; color: #FF3B30; margin-bottom: 8px !important; }
+
+        /* カラーバー用のスタイル */
+        .color-bar-container {
+            width: 85%;
+            max-width: 350px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .color-bar-title {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .color-bar {
+            display: flex; 
+            width: 100%; 
+            height: 30px; 
+            border-radius: 5px; 
+            overflow: hidden; 
+            border: 1px solid #ccc;
+        }
+        .color-bar div { flex: 1; }
+        .color-bar-labels {
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 12px; 
+            color: #666; 
+            margin-top: 5px;
+        }
+
+        .subtitle { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
+        .btn { background-color: #007AFF; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 10px; margin: 10px; width: 80%; max-width: 300px; font-weight: bold; cursor: pointer;}
 
         #camera-screen { display: none; position: relative; height: 100vh; height: 100dvh; background-color: black; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
@@ -48,7 +78,7 @@
             position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); 
             background-color: white; color: black; border: none; padding: 15px 30px; 
             font-size: 18px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
-            z-index: 10; width: 80%; max-width: 300px;
+            z-index: 10; width: 80%; max-width: 300px; cursor: pointer;
         }
 
         .rank-result { font-size: 32px; color: #FFD700; text-shadow: 2px 2px 4px #000; margin-top: 5px; display: inline-block; }
@@ -64,6 +94,24 @@
             <p class="notes-title">⚠️ 撮影時のご注意</p>
             <p>※1枚目は対象の衣類の「綺麗な部分(背中など)」、2枚目は「判定したい部分(襟元など)」を撮影してください。</p>
             <p>※対象の衣類はシワを伸ばし影が入らない状態で、スマホを動かさずに服をスライドさせて撮影してください。</p>
+        </div>
+
+        <!-- 追加したカラーバー -->
+        <div class="color-bar-container">
+            <div class="color-bar-title">黄ばみ判定の目安</div>
+            <div class="color-bar">
+                <div style="background-color: #F2F2F2;" title="新古品"></div>
+                <div style="background-color: #F4F1E9;" title="未使用に近い"></div>
+                <div style="background-color: #F6EED9;" title="目立った傷や汚れなし"></div>
+                <div style="background-color: #F9EBC9;" title="やや傷や汚れあり"></div>
+                <div style="background-color: #FBE9BE;" title="傷や汚れあり"></div>
+                <div style="background-color: #FFE4A3;" title="全体的に状態が悪い"></div>
+            </div>
+            <div class="color-bar-labels">
+                <span>白</span>
+                <span>← 黄ばみの進行 →</span>
+                <span>黄色</span>
+            </div>
         </div>
 
         <p class="subtitle">何をチェックしますか？</p>
@@ -97,7 +145,6 @@
             cameraScreen.style.display = 'block';
             step = 1;
             
-            // 全色対応用に文言を変更
             guideText.innerHTML = "まずは衣類の<br>綺麗な部分を円に合わせてください";
             captureBtn.innerText = "基準の色を記憶する";
 
@@ -142,7 +189,6 @@
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             
-            // 面（20x20ピクセル）で色を取得し平均化する処理
             const areaSize = 20; 
             const startX = Math.floor(centerX - (areaSize / 2));
             const startY = Math.floor(centerY - (areaSize / 2));
