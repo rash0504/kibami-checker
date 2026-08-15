@@ -7,7 +7,7 @@
     <style>
         body { margin: 0; background-color: #f5f5f5; font-family: sans-serif; text-align: center; }
         
-        #home-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
+        #home-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; overflow-y: auto; padding: 20px 0;}
         h1 { color: #333; font-size: 28px; margin-bottom: 15px; } 
         
         .notes-box {
@@ -26,38 +26,68 @@
         .notes-box p { margin: 5px 0; line-height: 1.5; }
         .notes-title { font-weight: bold; color: #FF3B30; margin-bottom: 8px !important; }
 
-        /* カラーバー用のスタイル */
+        /* カラーバーと凡例（レジェンド）用のスタイル */
         .color-bar-container {
             width: 85%;
             max-width: 350px;
             margin-bottom: 30px;
             text-align: left;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
         .color-bar-title {
             font-size: 14px;
             color: #333;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            text-align: center;
         }
         .color-bar {
             display: flex; 
             width: 100%; 
-            height: 30px; 
-            border-radius: 5px; 
+            height: 20px; 
+            border-radius: 4px; 
             overflow: hidden; 
             border: 1px solid #ccc;
+            margin-bottom: 15px;
         }
         .color-bar div { flex: 1; }
-        .color-bar-labels {
-            display: flex; 
-            justify-content: space-between; 
-            font-size: 12px; 
-            color: #666; 
-            margin-top: 5px;
+        
+        /* ランク詳細リスト */
+        .color-legend {
+            font-size: 12px;
+            color: #444;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .legend-text {
+            flex-grow: 1;
+        }
+        .legend-range {
+            font-family: monospace;
+            font-weight: bold;
+            color: #888;
+            margin-left: 5px;
         }
 
-        .subtitle { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
-        .btn { background-color: #007AFF; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 10px; margin: 10px; width: 80%; max-width: 300px; font-weight: bold; cursor: pointer;}
+        .subtitle { color: #666; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
+        .btn { background-color: #007AFF; color: white; border: none; padding: 18px 30px; font-size: 18px; border-radius: 10px; margin: 8px; width: 80%; max-width: 300px; font-weight: bold; cursor: pointer;}
 
         #camera-screen { display: none; position: relative; height: 100vh; height: 100dvh; background-color: black; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
@@ -96,21 +126,49 @@
             <p>※対象の衣類はシワを伸ばし影が入らない状態で、スマホを動かさずに服をスライドさせて撮影してください。</p>
         </div>
 
-        <!-- 追加したカラーバー -->
+        <!-- 改善したカラーバーと凡例（判定の目安） -->
         <div class="color-bar-container">
-            <div class="color-bar-title">黄ばみ判定の目安</div>
+            <div class="color-bar-title">判定ランクの目安</div>
             <div class="color-bar">
-                <div style="background-color: #F2F2F2;" title="新古品"></div>
-                <div style="background-color: #F4F1E9;" title="未使用に近い"></div>
-                <div style="background-color: #F6EED9;" title="目立った傷や汚れなし"></div>
-                <div style="background-color: #F9EBC9;" title="やや傷や汚れあり"></div>
-                <div style="background-color: #FBE9BE;" title="傷や汚れあり"></div>
-                <div style="background-color: #FFE4A3;" title="全体的に状態が悪い"></div>
+                <div style="background-color: #F2F2F2;"></div>
+                <div style="background-color: #F4F1E9;"></div>
+                <div style="background-color: #F6EED9;"></div>
+                <div style="background-color: #F9EBC9;"></div>
+                <div style="background-color: #FBE9BE;"></div>
+                <div style="background-color: #FFE4A3;"></div>
             </div>
-            <div class="color-bar-labels">
-                <span>白</span>
-                <span>← 黄ばみの進行 →</span>
-                <span>黄色</span>
+            
+            <div class="color-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #F2F2F2;"></div>
+                    <div class="legend-text">新古品</div>
+                    <div class="legend-range">0.0〜1.0</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #F4F1E9;"></div>
+                    <div class="legend-text">未使用に近い</div>
+                    <div class="legend-range">1.1〜2.0</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #F6EED9;"></div>
+                    <div class="legend-text">目立った傷や汚れなし</div>
+                    <div class="legend-range">2.1〜5.0</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #F9EBC9;"></div>
+                    <div class="legend-text">やや傷や汚れあり</div>
+                    <div class="legend-range">5.1〜8.0</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FBE9BE;"></div>
+                    <div class="legend-text">傷や汚れあり</div>
+                    <div class="legend-range">8.1〜10.0</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FFE4A3;"></div>
+                    <div class="legend-text">全体的に状態が悪い</div>
+                    <div class="legend-range">10.1〜</div>
+                </div>
             </div>
         </div>
 
